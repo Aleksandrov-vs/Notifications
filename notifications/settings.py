@@ -7,7 +7,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    'user.apps.UserConfig',
+    'users.apps.UsersConfig',
+    'groups.apps.GroupsConfig',
     'api.apps.ApiConfig',
     'rest_framework',
     'django.contrib.admin',
@@ -58,7 +59,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'users.User'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
