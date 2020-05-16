@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from users.models import User
 from django.contrib import messages
+from django.contrib.auth import authenticate
 
 
 def index(request):
@@ -28,10 +29,10 @@ def sing_up(request):
             new_user =user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            print('aaaaa', user_form.instance)
-            return redirect('/dashboard', context = User)
-        else:
-            print(user_form.errors)
+            # print(new_user.email)
+            # user = authenticate(username=new_user.email, password=user_form.cleaned_data['password'])
+            # print(user)
+            return redirect('/account/login')
     else:
         user_form = f()
     return render(request, template_name='registration/registration.html', context={'form': user_form})
