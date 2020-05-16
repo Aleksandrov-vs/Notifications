@@ -4,6 +4,7 @@ from core.forms import FormReg as f
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from users.models import User
+from django.contrib import messages
 
 
 def index(request):
@@ -28,7 +29,9 @@ def sing_up(request):
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
             print('aaaaa', user_form.instance)
-            return redirect('/dashboard')
+            return redirect('/dashboard', context = User)
+        else:
+            print(user_form.errors)
     else:
         user_form = f()
     return render(request, template_name='registration/registration.html', context={'form': user_form})

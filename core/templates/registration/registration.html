@@ -10,6 +10,14 @@
                     <h4> You have already registered! </h4>
                 </div>
         {% else %}
+        {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ form.errors}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endif %}
         <div class="form-group">
              <div class="form-group">
                  <label for="email_text">Email:</label>
