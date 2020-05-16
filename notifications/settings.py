@@ -1,5 +1,7 @@
 import os
 
+from django.conf.global_settings import LOGIN_REDIRECT_URL
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%o06&02k)*u&@y%syjxq9jc0#b10cu7l5mnzbf-cpxc_!z$@bx'
 DEBUG = True
@@ -7,8 +9,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',
     'groups.apps.GroupsConfig',
+    'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
     'api.apps.ApiConfig',
     'rest_framework',
     'django.contrib.admin',
@@ -34,8 +37,7 @@ ROOT_URLCONF = 'notifications.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'core/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,5 +83,8 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+
+LOGIN_REDIRECT_URL = '/dashboard'
+LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
