@@ -20,10 +20,15 @@ def dashboard(request):
 @csrf_protect
 def sing_up(request):
     if request.method == 'POST':
-        formUser = f(request.POST)
-        if formUser.is_valid():
-            formUser.save()
-            NewUser = User
-            User.save(formUser.instance)
-        return render(request, template_name='registration/registration.html', context={'form': formUser})
-    return render(request, template_name='registration/registration.html', context={'registered': False})
+        user_form = f(request.POST)
+        print(user_form.instance)
+        if user_form.is_valid():
+            user_form.save()
+            new_user =user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+            print('aaaaa', user_form.instance)
+            return redirect('/dashboard')
+    else:
+        user_form = f()
+    return render(request, template_name='registration/registration.html', context={'form': user_form})
