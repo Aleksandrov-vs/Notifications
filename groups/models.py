@@ -18,6 +18,7 @@ class TelegramUser(models.Model):
     id = models.IntegerField(primary_key=True, null=False, blank=True)
     username = models.CharField(max_length=50, null=True, blank=True)
     nickname = models.CharField(max_length=50, null=False, blank=True)
+
     groups = ArrayField(
         ArrayField(
             models.CharField(max_length=10)

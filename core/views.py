@@ -1,38 +1,29 @@
-from django.shortcuts import render, redirect
-from django.http import HttpRequest, HttpResponse
-from core.forms import FormReg as f
-from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
-from users.models import User
-from django.contrib import messages
-from django.contrib.auth import authenticate
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from core.forms import SignupForm
 
 
 def index(request):
     return render(request, 'index.html')
 
 
+@login_required(login_url='/account/login')
 def dashboard(request):
+    return render(request, 'dashboard/dashboard.html')
 
-    if not request.user.is_authenticated:
-        return redirect('/account/login')
-
-    return render(request, 'dashboard.html')
 
 @csrf_protect
-def sing_up(request):
+def sign_up(request):
+
+    signup_form = SignupForm()
+
     if request.method == 'POST':
-        user_form = f(request.POST)
-        print(user_form.instance)
-        if user_form.is_valid():
-            user_form.save()
-            new_user =user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['password'])
-            new_user.save()
-            # print(new_user.email)
-            # user = authenticate(username=new_user.email, password=user_form.cleaned_data['password'])
-            # print(user)
-            return redirect('/account/login')
-    else:
-        user_form = f()
-    return render(request, template_name='registration/registration.html', context={'form': user_form})
+        signup_form = SignupForm(request.POST)
+        if signup_form.is_valid():
+            user = signup_form.save()
+            login(request, user)
+            return redirect('/dashboard')
+
+    return render(request, 'registration/sign-up.html', context={'form': signup_form})

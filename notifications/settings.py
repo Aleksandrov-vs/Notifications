@@ -57,9 +57,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'notifications',
         'HOST': '127.0.0.1',
-        'PORT': '5432',
-        'USER': 'vasya',
-        'PASSWORD': 'ghj[jlyjvthgznm',
+        'PORT': '5432'
     }
 }
 

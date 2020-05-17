@@ -2,22 +2,23 @@
 
 {% block content %}
 
-
-    <form method="post"  >
-        {% csrf_token %}
-        {% if request.user.is_authenticated %}
-                <div class=>
-                    <h4> You have already registered! </h4>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
                 </div>
-        {% else %}
-        {% if form.errors %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ form.errors}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {% endif %}
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" action="/account/sign-up">
+        {% csrf_token %}
         <div class="form-group">
              <div class="form-group">
                  <label for="email_text">Email:</label>
@@ -27,7 +28,7 @@
         </div>
         <div class="form-group">
             <label for="pass_text">Password:</label>
-            <input name="password" type="password" class="form-control" id="pass_text"
+            <input name="password1" type="password" class="form-control" id="pass_text"
                    placeholder="Enter your password">
         </div>
         <div class="form-group">
@@ -37,9 +38,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Регистрация</button>
 
-
     </form>
 
-<!--    {% endif %}-->
 
 {% endblock %}
