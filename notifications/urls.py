@@ -8,4 +8,5 @@ import core.urls as urls_core
 urlpatterns = [
     url('account/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
+    url('', include('groups.urls')),
 ] + urls_core.urlpatterns
