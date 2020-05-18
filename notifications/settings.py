@@ -9,18 +9,18 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'authentication.apps.AuthenticationConfig',
+    'message.apps.MessageConfig',
     'groups.apps.GroupsConfig',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
-    'api.apps.ApiConfig',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'authentication'
+    'django.contrib.staticfiles'
 ]
 
 MIDDLEWARE = [
@@ -58,9 +58,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'notifications',
         'HOST': '127.0.0.1',
-        'PORT': '5432',
-        'USER': 'vasya',
-        'PASSWORD': 'ghj[jlyjvthgznm',
+        'PORT': '5432'
     }
 }
 

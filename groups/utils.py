@@ -1,5 +1,5 @@
 import secrets
 
 
-def createID():
+def create_id():
     return secrets.token_hex(5)

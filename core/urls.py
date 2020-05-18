@@ -1,8 +1,6 @@
 from django.urls import path
-import groups.views
-import core.views
+from core import views
 
 urlpatterns = [
-    path('', core.views.index, name='index'),
-    path('dashboard', core.views.dashboard, name='dashboard'),
+    path('', views.index)
 ]

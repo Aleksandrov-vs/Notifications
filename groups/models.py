@@ -1,11 +1,11 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from .utils import createID
+from .utils import create_id
 
 
 class Group(models.Model):
 
-    id = models.CharField(primary_key=True, unique=True, max_length=10, default=createID, editable=False)
+    id = models.CharField(primary_key=True, unique=True, max_length=10, default=create_id, editable=False)
     manager = models.ForeignKey('users.User', related_name='user', on_delete=models.CASCADE)
     name = models.CharField(max_length=10, null=False, blank=False)
 
