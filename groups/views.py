@@ -1,21 +1,22 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from groups.forms import GroupCreationForm
 from groups.models import TelegramUser
+from django.views.generic import View
 from django.contrib import messages
 from groups.models import Group
-from django.views.generic import View
 
 
-class DashboardGroupsView(View):
+class DashboardGroupsView(LoginRequiredMixin, View):
 
-    @login_required(login_url='/account/login')
+    login_url = '/account/login'
+
     def get(self, request):
         user_groups = Group.objects.filter(manager=request.user).all()
         group_creation_form = GroupCreationForm()
         return render(request, 'dashboard/groups/groups.html',context={'form': group_creation_form, 'groups': user_groups})
 
-    @login_required(login_url='/account/login')
     def post(self, request):
         user_groups = Group.objects.filter(manager=request.user).all()
         user = request.user
