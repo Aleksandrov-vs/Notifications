@@ -58,7 +58,9 @@ class DashboardGroupsView(View):
             group.manager = user
             group.save()
             user_groups = Group.objects.filter(manager=request.user).all()
-            return render(request, 'dashboard/groups/groups.html', context={'form': group_creation_form, 'groups': user_groups})
+            return render(request, 'dashboard/groups/groups.html',
+                          context={'form': group_creation_form, 'groups': user_groups})
+
         return render(request, 'dashboard/groups/groups.html',
                       context={'form': group_creation_form, 'groups': user_groups})
 

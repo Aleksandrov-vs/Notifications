@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
 from authentication.forms import SignupForm
 from django.contrib.auth import login
+from django.views.generic import View
 
 
 @csrf_protect
@@ -22,14 +23,29 @@ def sign_up(request):
     return render(request, 'registration/sign-up.html', context={'form': signup_form})
 
 
-@csrf_protect
-@login_required(login_url='/account/login')
-def change_password(request):
+# @csrf_protect
+# @login_required(login_url='/account/login')
+# def change_password(request):
+#
+#     if request.method == 'POST':
+#         change_pswd_form = PasswordChangeForm(request.user, request.POST)
+#         if change_pswd_form.is_valid():
+#             update_session_auth_hash(request, change_pswd_form.save())
+#         return render(request, 'registration/change_password.html', context={'request': request, 'form': change_pswd_form})
+#
+#     return render(request, 'registration/change_password.html')
 
-    if request.method == 'POST':
+class ChangePasswordViews(View):
+    def get(self, request):
+        change_pswd_form = PasswordChangeForm(request.user)
+        return render(request, 'registration/change_password.html', {'form': change_pswd_form})
+
+    def post(self, request):
         change_pswd_form = PasswordChangeForm(request.user, request.POST)
         if change_pswd_form.is_valid():
             update_session_auth_hash(request, change_pswd_form.save())
-        return render(request, 'registration/change_password.html', context={'request': request, 'form': change_pswd_form})
+        else :
+            print(change_pswd_form.errors)
+        return render(request, 'registration/change_password.html',
+                      context={'request': request, 'form': change_pswd_form})
 
-    return render(request, 'registration/change_password.html')
