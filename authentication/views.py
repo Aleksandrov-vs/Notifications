@@ -1,11 +1,12 @@
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
-from authentication.forms import SignupForm
+from authentication.forms import SignupForm, ChangePasswordForm
 from django.contrib.auth import login
 from django.views.generic import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+
 
 
 @csrf_protect
@@ -23,29 +24,18 @@ def sign_up(request):
     return render(request, 'registration/sign-up.html', context={'form': signup_form})
 
 
-# @csrf_protect
-# @login_required(login_url='/account/login')
-# def change_password(request):
-#
-#     if request.method == 'POST':
-#         change_pswd_form = PasswordChangeForm(request.user, request.POST)
-#         if change_pswd_form.is_valid():
-#             update_session_auth_hash(request, change_pswd_form.save())
-#         return render(request, 'registration/change_password.html', context={'request': request, 'form': change_pswd_form})
-#
-#     return render(request, 'registration/change_password.html')
 
-class ChangePasswordViews(View):
+
+class ChangePasswordViews(LoginRequiredMixin, View):
+    login_url = '/account/login'
+
     def get(self, request):
-        change_pswd_form = PasswordChangeForm(request.user)
+        change_pswd_form = ChangePasswordForm(request.user)
         return render(request, 'registration/change_password.html', {'form': change_pswd_form})
 
     def post(self, request):
-        change_pswd_form = PasswordChangeForm(request.user, request.POST)
-        if change_pswd_form.is_valid():
-            update_session_auth_hash(request, change_pswd_form.save())
-        else :
-            print(change_pswd_form.errors)
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            update_session_auth_hash(request, form.save())
         return render(request, 'registration/change_password.html',
-                      context={'request': request, 'form': change_pswd_form})
-
+                      context={'request': request, 'form': form})
