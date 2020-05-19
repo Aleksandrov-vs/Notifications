@@ -1,5 +1,5 @@
+from groups.models import Group
 from django import forms
-from .models import Group
 
 
 class GroupCreationForm(forms.ModelForm):
@@ -7,3 +7,8 @@ class GroupCreationForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['name']
+        error_messages = {
+            'name': {
+                'max_length': 'Максимальная длина навазания 20 символов'
+            }
+        }

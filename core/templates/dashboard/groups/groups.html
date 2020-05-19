@@ -1,22 +1,20 @@
 {% extends 'dashboard/dashboard.html' %}
 
 {% block tab %}
-
     {% if form.errors %}
-        {% for field in form %}
-            {% for error in field.errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ error|escape }}</strong>
-                </div>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-         <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
+                {% for error in form.non_field_errors %}
+                     <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                     </div>
+                {% endfor %}
     {% endif %}
-    <!-- Modal -->
     <div class="modal fade" id="GroupModalCenter" tabindex="-1" role="dialog" aria-labelledby="GroupModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">

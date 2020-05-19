@@ -2,5 +2,6 @@ from django.urls import path
 from message import views
 
 urlpatterns = [
-    path('', views.dashboard, name='dashboard')
+    path('', views.DashboardMessagesView.as_view(), name='dashboard'),
+    # path('notification/<id>', views.view, name='dashboard')
 ]

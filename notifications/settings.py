@@ -1,6 +1,12 @@
 import os
 
 from django.conf.global_settings import LOGIN_REDIRECT_URL
+from django.utils.translation import ugettext_lazy as _
+from django.forms import Field
+
+Field.default_error_messages = {
+    'required': _("Поле обязательно для заполнения")
+}
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%o06&02k)*u&@y%syjxq9jc0#b10cu7l5mnzbf-cpxc_!z$@bx'

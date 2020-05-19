@@ -10,6 +10,9 @@ from django.contrib.auth import login
 @csrf_protect
 def sign_up(request):
 
+    if request.user.is_authenticated:
+        return redirect('/dashboard')
+
     signup_form = SignupForm()
 
     if request.method == 'POST':

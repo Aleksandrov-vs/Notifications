@@ -13,11 +13,13 @@ class DashboardGroupsView(LoginRequiredMixin, View):
     login_url = '/account/login'
 
     def get(self, request):
+
         user_groups = Group.objects.filter(manager=request.user).all()
         group_creation_form = GroupCreationForm()
         return render(request, 'dashboard/groups/groups.html',context={'form': group_creation_form, 'groups': user_groups})
 
     def post(self, request):
+
         user_groups = Group.objects.filter(manager=request.user).all()
         user = request.user
         group_creation_form = GroupCreationForm(request.POST)
