@@ -2,4 +2,25 @@
 
 {% block tab %}
    <a href="/dashboard/group/{{ group.id }}/delete">Удалить группу</a>
+   <h4>{{group.name}}</h4>
+   <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">username</th>
+      <th scope="col">nickname</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for telegram_user in user_group %}
+       <tr>
+         <th scope="row">{{telegram_user.id}}</th>
+         <td>{{telegram_user.username}}</td>
+         <td>{{telegram_user.nickname}}</td>
+
+       </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

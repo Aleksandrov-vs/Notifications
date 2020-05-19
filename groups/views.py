@@ -39,14 +39,27 @@ class DashboardGroupsView(LoginRequiredMixin, View):
 @login_required(login_url='/account/login')
 def view_group(request, group_id):
 
-    try:
-        group = Group.objects.get(id=group_id)
-        context = dict()
-        context['group'] = group
-    except Group.DoesNotExist:
-        return redirect('/dashboard/groups')
+    group = Group.objects.get(id=group_id)
+    if request.user == group.manager:
 
-    return render(request, 'dashboard/groups/group.html', context)
+        try:
+            group = Group.objects.get(id=group_id)
+            context = dict()
+            context['group'] = group
+        except Group.DoesNotExist:
+            return redirect('/dashboard/groups')
+
+        list_user = list()
+        all_users = TelegramUser.objects.all()
+
+        for user in all_users:
+            if group_id in user.groups:
+                list_user.append(user)
+
+        context.update({'user_group': list_user})
+        return render(request, 'dashboard/groups/group.html', context)
+    else:
+        return redirect('/dashboard/groups')
 
 
 @login_required(login_url='/account/login')
