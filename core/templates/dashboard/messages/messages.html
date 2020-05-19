@@ -78,7 +78,7 @@
                 <tr>
                     <th scope="row">{{ notification.name }}</th>
                     <td><a href="/dashboard/group/{{  notification.group.id  }}">{{ notification.group.name }}</a></td>
-                     <td>{{ notification.time }}</td>
+                     <td>{{ notification.time| date:"d/m/Y h:m" }}</td>
                     <td>
                         <button class="btn btn-primary"><a href="/dashboard/group/{{ group.id }}">Просмотреть</a></button>
                     </td>
