@@ -9,6 +9,7 @@
       <th scope="col">#</th>
       <th scope="col">username</th>
       <th scope="col">nickname</th>
+      <th scope="col">Действия</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +19,7 @@
          <th scope="row">{{telegram_user.id}}</th>
          <td>{{telegram_user.username}}</td>
          <td>{{telegram_user.nickname}}</td>
+           <td> <button class="btn btn-primary"><a href="/dashboard/group/{{ group.id }}/{{ telegram_user.id }}/delete_user">Удалить</a></button></td>
 
        </tr>
     {% endfor %}

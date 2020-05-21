@@ -36,47 +36,77 @@ class DashboardGroupsView(LoginRequiredMixin, View):
                       context={'form': group_creation_form, 'groups': user_groups})
 
 
-@login_required(login_url='/account/login')
-def view_group(request, group_id):
+class ViewGroupView(LoginRequiredMixin, View):
 
-    group = Group.objects.get(id=group_id)
-    if request.user == group.manager:
+    login_url = '/account/login'
+
+    def get(self, request, group_id):
+
+        group = Group.objects.get(id=group_id)
+
+        if request.user == group.manager:
+
+            try:
+                group = Group.objects.get(id=group_id)
+                context = dict()
+                context['group'] = group
+            except Group.DoesNotExist:
+                return redirect('/dashboard/groups')
+
+            list_user = list()
+            all_users = TelegramUser.objects.all()
+
+            for user in all_users:
+                if group_id in user.groups:
+                    list_user.append(user)
+
+            context.update({'user_group': list_user})
+            return render(request, 'dashboard/groups/group.html', context)
+        else:
+            return redirect('/dashboard/groups')
+
+
+class DeleteGroupView(LoginRequiredMixin, View):
+
+    login_url = '/account/login'
+
+    def get(self, request, group_id):
 
         try:
             group = Group.objects.get(id=group_id)
-            context = dict()
-            context['group'] = group
+            if request.user == group.manager:
+                group.delete()
+                all_users = TelegramUser.objects.all()
+                for user in all_users:
+                    if group_id in user.groups:
+                        user.groups.remove(group_id)
+                        user.save()
+                messages.info(request, f'Вы успешно удалили группу {group.name}')
+
         except Group.DoesNotExist:
             return redirect('/dashboard/groups')
 
-        list_user = list()
-        all_users = TelegramUser.objects.all()
-
-        for user in all_users:
-            if group_id in user.groups:
-                list_user.append(user)
-
-        context.update({'user_group': list_user})
-        return render(request, 'dashboard/groups/group.html', context)
-    else:
         return redirect('/dashboard/groups')
 
 
-@login_required(login_url='/account/login')
-def delete_group(request, group_id):
 
-    try:
+
+
+class DeleteUser(View):
+
+    def get(self, request, group_id, telegram_user_id):
         group = Group.objects.get(id=group_id)
+        telegram_user = TelegramUser.objects.get(id=telegram_user_id)
+
+
         if request.user == group.manager:
-            group.delete()
-            all_users = TelegramUser.objects.all()
-            for user in all_users:
-                if group_id in user.groups:
-                    user.groups.remove(group_id)
-                    user.save()
-            messages.info(request, f'Вы успешно удалили группу {group.name}')
+            if group_id in telegram_user.groups:
+                telegram_user.groups.remove(group_id)
+                telegram_user.save()
+            messages.info(request, f'Вы успешно удалили юзера {telegram_user.id}')
+            return redirect(f'/dashboard/group/{group_id}')
+        return redirect(f'/dashboard/group/{group_id}')
 
-    except Group.DoesNotExist:
-        pass
 
-    return redirect('/dashboard/groups')
+
+
