@@ -1,40 +1,59 @@
 from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
-from authentication.forms import SignupForm, ChangePasswordForm
+from authentication.forms import ChangePasswordForm, SingUpForm
 from django.contrib.auth import login
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from authentication.serializers import SingUpSerializer
+from users.models import User
+from users.serializers import UserSerializer
+import json
+from authentication.serializers import LoginSerializer
+
+# class SingUpView(APIView):
+#
+#     def get(self, request):
+#         form = SignupForm()
+#         return render(request, 'registration/sign-up.html', context={'form': form})
+#
+#     def post(self, request):
+#         form = SignupForm(request.POST)
+#
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return redirect('/dashboard')
+#         return render(request, 'registration/sign-up.html', context={'form': form})
 
 
+class SingUpView(APIView):
 
-@csrf_protect
-def sign_up(request):
+    def get(self, request):
+        serializer = SingUpSerializer()
+        return Response(serializer.data)
 
-    if request.user.is_authenticated:
-        return redirect('/dashboard')
+    def post(self, request):
+        serializer = SingUpSerializer(data=request.data)
 
-    signup_form = SignupForm()
-
-    if request.method == 'POST':
-        signup_form = SignupForm(request.POST)
-        if signup_form.is_valid():
-            user = signup_form.save()
+        if serializer.is_valid():
+            print('\n---------------\nvalid_date', serializer.validated_data, '\n---------------\n')
+            print('email', (serializer.validated_data.get('email')))
+            user = serializer.save()
             login(request, user)
-            return redirect('/dashboard')
-
-    return render(request, 'registration/sign-up.html', context={'form': signup_form})
-
-
+            return Response(user.email)
+        print(serializer.error_messages, serializer.errors)
+        return Response({"form": serializer.data, 'err': serializer.errors})
 
 
 class ChangePasswordViews(LoginRequiredMixin, View):
     login_url = '/account/login'
 
     def get(self, request):
-        change_pswd_form = ChangePasswordForm(request.user)
-        return render(request, 'registration/change_password.html', {'form': change_pswd_form})
+        form = ChangePasswordForm(request.user)
+        return render(request, 'registration/change_password.html', {'form': form})
 
     def post(self, request):
         form = ChangePasswordForm(request.user, request.POST)
@@ -42,3 +61,19 @@ class ChangePasswordViews(LoginRequiredMixin, View):
             update_session_auth_hash(request, form.save())
         return render(request, 'registration/change_password.html',
                       context={'request': request, 'form': form})
+
+
+class LoginView(View):
+
+    def get(self, request):
+        serializer = SingUpSerializer()
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            u = User.objects.get(email=serializer.validated_data.get('email'))
+            if u.check_password(serializer.validated_data.get('password')):
+                login(request, u)
+                return Response(u.email)
+        return Response({"form": serializer.data, 'err': serializer.errors})

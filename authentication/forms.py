@@ -4,9 +4,9 @@ from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
 
 
-class SignupForm(forms.ModelForm):
+class SingUpForm(forms.ModelForm):
 
-    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput)
 
     def clean_email(self):
@@ -15,23 +15,23 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError(u'Пользователь с таким email уже существует')
         return email
 
-    def clean_password1(self):
-        password = self.cleaned_data.get('password1')
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
         try:
             validate_password(password)
         except forms.ValidationError:
             raise forms.ValidationError('Придумайте пароль длинной от 8 символов, пароль не должен быть простым')
 
     def clean_password2(self):
-        password1 = self.cleaned_data.get('password1')
+        password = self.cleaned_data.get('password')
         password2 = self.cleaned_data.get('password2')
-        if password1 and password2 and password1 != password2:
+        if password and password2 and password != password2:
             raise forms.ValidationError(u'Пароли не совпадают')
-        return password1
+        return password
 
     def save(self, commit=True):
-        user = super(SignupForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
+        user = super(SingUpForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
         if commit:
             user.save()
         return user
@@ -61,4 +61,3 @@ class ChangePasswordForm(PasswordChangeForm):
             if password1 != password2:
                 raise forms.ValidationError(u'Пароли не совпадают')
         return password2
-

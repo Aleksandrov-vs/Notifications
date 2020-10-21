@@ -6,9 +6,10 @@ from groups.models import TelegramUser
 from django.views.generic import View
 from django.contrib import messages
 from groups.models import Group
+from rest_framework.views import APIView
 
 
-class DashboardGroupsView(LoginRequiredMixin, View):
+class DashboardGroupsView(LoginRequiredMixin, APIView):
 
     login_url = '/account/login'
 
@@ -16,6 +17,7 @@ class DashboardGroupsView(LoginRequiredMixin, View):
 
         user_groups = Group.objects.filter(manager=request.user).all()
         group_creation_form = GroupCreationForm()
+        print(type(user_groups), user_groups)
         return render(request, 'dashboard/groups/groups.html',context={'form': group_creation_form, 'groups': user_groups})
 
     def post(self, request):
@@ -23,7 +25,7 @@ class DashboardGroupsView(LoginRequiredMixin, View):
         user_groups = Group.objects.filter(manager=request.user).all()
         user = request.user
         group_creation_form = GroupCreationForm(request.POST)
-
+        print(type(user_groups), user_groups)
         if group_creation_form.is_valid():
             group = group_creation_form.save(commit=False)
             group.manager = user
@@ -106,7 +108,3 @@ class DeleteUser(View):
             messages.info(request, f'Вы успешно удалили юзера {telegram_user.id}')
             return redirect(f'/dashboard/group/{group_id}')
         return redirect(f'/dashboard/group/{group_id}')
-
-
-
-
