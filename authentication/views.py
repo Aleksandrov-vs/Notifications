@@ -63,17 +63,17 @@ class ChangePasswordViews(LoginRequiredMixin, View):
                       context={'request': request, 'form': form})
 
 
-class LoginView(View):
+class LoginView(APIView):
 
     def get(self, request):
-        serializer = SingUpSerializer()
+        serializer = LoginSerializer()
         return Response(serializer.data)
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
+
         if serializer.is_valid():
             u = User.objects.get(email=serializer.validated_data.get('email'))
-            if u.check_password(serializer.validated_data.get('password')):
-                login(request, u)
-                return Response(u.email)
+            login(request, u)
+            return Response(u.email)
         return Response({"form": serializer.data, 'err': serializer.errors})
