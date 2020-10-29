@@ -6,6 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 class SingUpSerializer(serializers.ModelSerializer):
 
     password2 = serializers.CharField(label='Подтверждение пароля', style={'input_type': 'password'}, write_only=True)
+
     def validate_email(self, value):
         email = value
         if email and User.objects.filter(email=email).exists():
@@ -13,9 +14,8 @@ class SingUpSerializer(serializers.ModelSerializer):
         return email
 
     def validate_password(self, value):
-        try:
-            validate_password(password)
-        except serializers.ValidationError:
+
+        if validate_password(value) is not None:
             raise serializers.ValidationError('Придумайте пароль длинной от 8 символов, пароль не должен быть простым')
         return value
 
@@ -24,7 +24,7 @@ class SingUpSerializer(serializers.ModelSerializer):
         password2 = attrs.get('password2')
 
         if password and password2 and password != password2:
-                raise serializers.ValidationError(u'Пароли не совпадают')
+            raise serializers.ValidationError(u'Пароли не совпадают')
 
         return attrs
 
@@ -44,7 +44,6 @@ class SingUpSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-
     email = serializers.CharField(label='email')
     password = serializers.CharField(label='Подтверждение пароля', style={'input_type': 'password'}, write_only=True)
 
@@ -55,10 +54,10 @@ class LoginSerializer(serializers.Serializer):
         return True
 
     def validate_email(self, value):
-       if self.len_null(value):
-           print('поле не должно быть пустым')
-           raise serializers.ValidationError('поле не должно быть пустым')
-       return value
+        if self.len_null(value):
+            print('поле не должно быть пустым')
+            raise serializers.ValidationError('поле не должно быть пустым')
+        return value
 
     def validate_password(self, value):
         if self.len_null(value):

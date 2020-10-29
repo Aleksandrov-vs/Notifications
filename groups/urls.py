@@ -6,4 +6,5 @@ urlpatterns = [
     path('group/<group_id>', views.ViewGroupView.as_view(), name='view_group'),
     path('group/<group_id>/delete', views.DeleteGroupView.as_view(), name='delete_group'),
     path('group/<group_id>/<telegram_user_id>/delete_user/', views.DeleteUser.as_view(), name= 'delete_telegram_user'),
+    path('api/v1/groups', views.DashboardGroupsApiView.as_view(), name='api_groups')
 ]

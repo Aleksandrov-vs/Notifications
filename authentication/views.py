@@ -29,7 +29,7 @@ from authentication.serializers import LoginSerializer
 #         return render(request, 'registration/sign-up.html', context={'form': form})
 
 
-class SingUpView(APIView):
+class SingUpApiView(APIView):
 
     def get(self, request):
         serializer = SingUpSerializer()
@@ -37,15 +37,11 @@ class SingUpView(APIView):
 
     def post(self, request):
         serializer = SingUpSerializer(data=request.data)
-
-        if serializer.is_valid():
-            print('\n---------------\nvalid_date', serializer.validated_data, '\n---------------\n')
-            print('email', (serializer.validated_data.get('email')))
-            user = serializer.save()
-            login(request, user)
-            return Response(user.email)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        login(request, user)
         print(serializer.error_messages, serializer.errors)
-        return Response({"form": serializer.data, 'err': serializer.errors})
+        return Response(user.email)
 
 
 class ChangePasswordViews(LoginRequiredMixin, View):
@@ -63,7 +59,7 @@ class ChangePasswordViews(LoginRequiredMixin, View):
                       context={'request': request, 'form': form})
 
 
-class LoginView(APIView):
+class LoginApiView(APIView):
 
     def get(self, request):
         serializer = LoginSerializer()
@@ -72,8 +68,7 @@ class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
 
-        if serializer.is_valid():
-            u = User.objects.get(email=serializer.validated_data.get('email'))
-            login(request, u)
-            return Response(u.email)
-        return Response({"form": serializer.data, 'err': serializer.errors})
+        serializer.is_valid(raise_exception=True)
+        u = User.objects.get(email=serializer.validated_data.get('email'))
+        login(request, u)
+        return Response(u.email)

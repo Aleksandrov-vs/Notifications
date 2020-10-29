@@ -1,12 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from rest_framework.response import Response
+
 from groups.forms import GroupCreationForm
 from groups.models import TelegramUser
 from django.views.generic import View
 from django.contrib import messages
 from groups.models import Group
 from rest_framework.views import APIView
+
+from groups.serializers import GroupSerializer
 
 
 class DashboardGroupsView(LoginRequiredMixin, APIView):
@@ -108,3 +112,17 @@ class DeleteUser(View):
             messages.info(request, f'Вы успешно удалили юзера {telegram_user.id}')
             return redirect(f'/dashboard/group/{group_id}')
         return redirect(f'/dashboard/group/{group_id}')
+
+
+class DashboardGroupsApiView(APIView, LoginRequiredMixin):
+    def get(self, request):
+        groups = Group.objects.filter(manager=request.user).all()
+        serializer = GroupSerializer(groups, many=True)
+        # serializer.is_valid(raise_exception=True)
+        return Response({'groups': serializer.data})
+
+    def post(self, request):
+        serializer = GroupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        group = serializer.save(manager=request.user)
+        return Response({'name': group.name})
