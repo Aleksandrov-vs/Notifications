@@ -48,10 +48,10 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(label='Подтверждение пароля', style={'input_type': 'password'}, write_only=True)
 
     def len_null(self, value):
-        print(value)
+        print(len(value))
         if len(value) == 0:
-            return False
-        return True
+            return True
+        return False
 
     def validate_email(self, value):
         if self.len_null(value):

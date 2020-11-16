@@ -8,6 +8,8 @@ urlpatterns = [
     url('account/', include('authentication.urls')),
     url('dashboard/', include('groups.urls')),
     url('dashboard/', include('message.urls')),
+    url('api/v1/account/', include('authentication.api_urls')),
+    url('api/v1/', include('groups.api_urls')),
     path('admin/', admin.site.urls),
     url('', include('core.urls')),
 ]
