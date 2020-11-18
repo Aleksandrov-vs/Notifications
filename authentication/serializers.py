@@ -42,9 +42,10 @@ class SingUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password', 'password2']
-        validators = []
+        validators: []
         extra_kwargs = {
             'email': {
+                'validators': [],
                 "error_messages": {
                     'non_field_errors': ' ничего не работает ',
                     "required": "это поле обязательно.",
@@ -54,6 +55,7 @@ class SingUpSerializer(serializers.ModelSerializer):
                 }
             },
             'password': {
+                'validators': [],
                 'write_only': True,
                 'error_messages': {
                         'non_field_errors"': ' ничего не работает ',
