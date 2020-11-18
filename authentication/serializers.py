@@ -22,7 +22,6 @@ class SingUpSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         password = attrs.get('password')
         password2 = attrs.get('password2')
-
         if password and password2 and password != password2:
             raise serializers.ValidationError(u'Пароли не совпадают')
 
@@ -38,8 +37,22 @@ class SingUpSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'password', 'password2']
         extra_kwargs = {
-            'email': {'error_messages': {'invalid': 'Введите существующий адрес электронной почты'}},
-            'password': {'write_only': True}
+            'email': {
+                "error_messages": {
+                    "required": "это поле обязательно.",
+                    "null": "это поле не может быть null.",
+                    "invalid": "Введите существующий адрес электронной почты",
+                    'unique': 'пользователь с таким именнем уже есть'
+                }
+                    },
+            'password': {
+                'write_only': True,
+                'error_messages': {
+                    'invalid': 'Придумайте пароль длинной от 8 символов, пароль не должен быть простым',
+                    'required': 'поле не должно быть пустым',
+                    'null': 'поле не должно быть пустым'
+                }
+            }
         }
 
 
@@ -48,7 +61,6 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(label='Подтверждение пароля', style={'input_type': 'password'}, write_only=True)
 
     def len_null(self, value):
-        print(len(value))
         if len(value) == 0:
             return True
         return False
@@ -72,9 +84,8 @@ class LoginSerializer(serializers.Serializer):
 
         try:
             u = User.objects.get(email=email)
-
-        except serializers.ValidationError:
-            raise serializer.ValidationError('email или пароль не верны')
+        except Exception:
+            raise serializers.ValidationError('email или пароль не верны')
 
         if not (u.check_password(password)):
             raise serializers.ValidationError('email или пароль не верны')

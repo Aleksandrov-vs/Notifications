@@ -44,11 +44,14 @@ class SingUpApiView(APIView):
 
     def post(self, request):
         serializer = SingUpSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        login(request, user)
-        print(serializer.error_messages, serializer.errors)
-        return Response(user.email)
+        # serializer.is_valid(raise_exception=True)
+        if serializer.is_valid():
+            user = serializer.save()
+            login(request, user)
+            print(serializer.error_messages, serializer.errors)
+            return Response(user.email)
+        print(serializer.errors, serializer.error_messages)
+        return Response({'error_messages': serializer.error_messages, "errors": serializer.errors.__doc__})
 
 
 class ChangePasswordViews(LoginRequiredMixin, View):
@@ -77,9 +80,12 @@ class LoginApiView(APIView):
         serializer = LoginSerializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
-        u = User.objects.get(email=serializer.validated_data.get('email'))
-        login(request, u)
-        return Response(u.email)
+        try:
+            u = User.objects.get(email=serializer.validated_data.get('email'))
+            login(request, u)
+            return Response(u.email)
+        except:
+            return Response({'email': 'email err'})
 
 
 class JWTAuthenticationAPIView(APIView):
