@@ -19,10 +19,16 @@ class SingUpSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Придумайте пароль длинной от 8 символов, пароль не должен быть простым')
         return value
 
+    def validate_password2(self, value):
+        if len(value) < 1:
+            raise serializers.ValidationError('пароли несовпадают')
+
+
+
     def validate(self, attrs):
         password = attrs.get('password')
         password2 = attrs.get('password2')
-        if password and password2 and password != password2:
+        if password != password2:
             raise serializers.ValidationError(u'Пароли не совпадают')
 
         return attrs
@@ -36,9 +42,9 @@ class SingUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password', 'password2']
+        validators = []
         extra_kwargs = {
             'email': {
-                'required': False,
                 "error_messages": {
                     'non_field_errors': ' ничего не работает ',
                     "required": "это поле обязательно.",
@@ -46,19 +52,18 @@ class SingUpSerializer(serializers.ModelSerializer):
                     "invalid": "Введите существующий адрес электронной почты",
                     'unique': 'пользователь с таким именнем уже есть'
                 }
-                    },
+            },
             'password': {
                 'write_only': True,
-                'required': False,
                 'error_messages': {
-                    'non_field_errors"': ' ничего не работает ',
-                    'invalid': 'Придумайте пароль длинной от 8 символов, пароль не должен быть простым',
-                    'required': 'поле не должно быть пустым',
-                    'null': 'поле не должно быть пустым'
-                }
+                        'non_field_errors"': ' ничего не работает ',
+                        'invalid': 'Придумайте пароль длинной от 8 символов, пароль не должен быть простым',
+                        'required': 'поле не должно быть пустым',
+                        'null': 'поле не должно быть пустым'
+                    }
             }
         }
-        validators = []
+
 
 
 class LoginSerializer(serializers.Serializer):
