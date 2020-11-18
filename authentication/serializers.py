@@ -38,7 +38,9 @@ class SingUpSerializer(serializers.ModelSerializer):
         fields = ['email', 'password', 'password2']
         extra_kwargs = {
             'email': {
+                'required': False,
                 "error_messages": {
+                    'non_field_errors': ' ничего не работает ',
                     "required": "это поле обязательно.",
                     "null": "это поле не может быть null.",
                     "invalid": "Введите существующий адрес электронной почты",
@@ -47,13 +49,16 @@ class SingUpSerializer(serializers.ModelSerializer):
                     },
             'password': {
                 'write_only': True,
+                'required': False,
                 'error_messages': {
+                    'non_field_errors"': ' ничего не работает ',
                     'invalid': 'Придумайте пароль длинной от 8 символов, пароль не должен быть простым',
                     'required': 'поле не должно быть пустым',
                     'null': 'поле не должно быть пустым'
                 }
             }
         }
+        validators = []
 
 
 class LoginSerializer(serializers.Serializer):
