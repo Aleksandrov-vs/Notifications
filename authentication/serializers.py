@@ -20,8 +20,10 @@ class SingUpSerializer(serializers.ModelSerializer):
         return value
 
     def validate_password2(self, value):
+        print('password2= ', value)
         if len(value) < 1:
             raise serializers.ValidationError('пароли несовпадают')
+        return value
 
 
 
@@ -30,7 +32,6 @@ class SingUpSerializer(serializers.ModelSerializer):
         password2 = attrs.get('password2')
         if password != password2:
             raise serializers.ValidationError(u'Пароли не совпадают')
-
         return attrs
 
     def save(self, **kwargs):
@@ -65,7 +66,6 @@ class SingUpSerializer(serializers.ModelSerializer):
                     }
             }
         }
-
 
 
 class LoginSerializer(serializers.Serializer):

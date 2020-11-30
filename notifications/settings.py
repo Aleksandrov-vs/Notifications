@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'groups.apps.GroupsConfig',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
+    'video.apps.VideoConfig',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -128,4 +129,20 @@ LOGIN_REDIRECT_URL = '/dashboard'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/account/login'
 APPEND_SLASH = True
+
+_PATH = os.path.abspath(os.path.dirname(__file__))
+
+MEDIA_ROOT = os.path.join(_PATH, 'files', 'media')
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(_PATH, 'files', 'static')
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(_PATH, 'static'),
+)
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+ADMIN_MEDIA_PREFIX = '/static/admin/'

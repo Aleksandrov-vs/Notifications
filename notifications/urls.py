@@ -11,5 +11,6 @@ urlpatterns = [
     url('api/v1/account/', include('authentication.api_urls')),
     url('api/v1/', include('groups.api_urls')),
     path('admin/', admin.site.urls),
+    url('api/v1/video', include('video.urls')),
     url('', include('core.urls')),
 ]
